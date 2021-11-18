@@ -12,6 +12,7 @@ import (
 
 	"github.com/hashicorp/vault/api"
 	fromenv "github.com/ls-brentsmith/vault-initialize/pkg/fromenv"
+	k8s "github.com/ls-brentsmith/vault-initialize/pkg/k8s"
 	secrets "github.com/ls-brentsmith/vault-initialize/pkg/secrets"
 )
 
@@ -34,6 +35,8 @@ func main() {
 
 	// Upload root token and recovery keys
 	secrets.CreateSecret(SecretID, ProjectID, json)
+
+	k8s.CreateK8sSecret()
 }
 
 func initClient() {

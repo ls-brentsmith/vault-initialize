@@ -60,7 +60,7 @@ func Duration(env string, def time.Duration) time.Duration {
 func Required(env string) string {
 	val := os.Getenv(env)
 	if val == "" {
-		log.Fatalf("%v must be set and not empty", val)
+		log.Fatalf("%v must be set and not empty", env)
 	}
 
 	return val

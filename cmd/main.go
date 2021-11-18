@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -10,21 +11,29 @@ import (
 	"time"
 
 	"github.com/hashicorp/vault/api"
-	fromenv "github.com/ls-brentsmith/vault-initialize/fromenv"
+	fromenv "github.com/ls-brentsmith/vault-initialize/pkg/fromenv"
+	secrets "github.com/ls-brentsmith/vault-initialize/pkg/secrets"
 )
 
 var (
 	VaultClient  *api.Client
 	InitResponse *api.InitResponse
 	UserAgent    = fmt.Sprintf("vault-initialize/0.1.0 (%s)", runtime.Version())
+	SecretID     = fromenv.Required("SECRET_ID")
+	ProjectID    = fromenv.Required("PROJECT_ID")
 )
 
 func main() {
 	// initalize vault
-	initClient()
 	Init()
 
-	// TODO: write keys to google secret manager
+	json, err := (json.Marshal(InitResponse))
+	if err != nil {
+		log.Fatalf("Unable to unmarshall response: %v", err)
+	}
+
+	// Upload root token and recovery keys
+	secrets.CreateSecret(SecretID, ProjectID, json)
 }
 
 func initClient() {
@@ -42,13 +51,23 @@ func initClient() {
 }
 
 func Init() {
+	// Instantiate a new client
+	initClient()
+
+	// Poll for vault status
 	for {
 		resp, err := status()
 		if err != nil {
 			log.Println("Vault is unreachable, retrying.")
 		} else if resp.Initialized {
-			log.Println("Initialized and Unsealed. Exiting.")
-			break
+			if InitResponse == nil {
+				log.Println("Vault already initialized. Nothing to do.")
+				// Possible we should exit with some other code to indicate no-op?
+				os.Exit(0)
+			} else {
+				log.Println("Initialized and Unsealed.")
+				break
+			}
 		} else if resp.Sealed {
 			fmt.Println("Sealed and Unitialized. Initializing!")
 			InitResponse = initialize()
@@ -61,6 +80,7 @@ func Init() {
 		}
 		wait()
 	}
+
 }
 
 func wait() {
@@ -94,6 +114,7 @@ func unseal() {
 	} else if len(InitResponse.Keys) > 0 {
 		// if initResponse has Keys, it means that server needs to be unsealed
 		log.Println("Detected unseal keys, unsealing.")
+		// TODO: iterate over the array of keys for unseal. Right now hardcoded to just 1, but that could be configurable
 		_, err := VaultClient.Sys().Unseal(InitResponse.Keys[0])
 		if err != nil {
 			log.Fatalf("Unable to unseal vault %v", err)

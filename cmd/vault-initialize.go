@@ -22,6 +22,8 @@ var (
 	UserAgent    = fmt.Sprintf("vault-initialize/0.1.0 (%s)", runtime.Version())
 	SecretID     = fromenv.Required("SECRET_ID")
 	ProjectID    = fromenv.Required("PROJECT_ID")
+	Namespace    = fromenv.Required("NAMESPACE")
+	SecretName   = fromenv.String("SECRET_NAME", "snapshot-creds")
 )
 
 func main() {
@@ -36,7 +38,7 @@ func main() {
 	// Upload root token and recovery keys
 	secrets.CreateSecret(SecretID, ProjectID, json)
 
-	k8s.CreateK8sSecret()
+	k8s.CreateK8sSecret(Namespace, SecretName, "aa-123456-123456", "123456798-asdf-fdsa")
 }
 
 func initClient() {

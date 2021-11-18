@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "run_vault",
+        "command": "vault", // Could be any other shell command
+        "args": ["server", "-config=config.hcl"],
+        "type": "shell",
+        "isBackground": true,
+        "promptOnClose": false,
+        "presentation": {
+            "reveal": "silent",
+        },
+        "problemMatcher": []
+    },
+    {
+        "label": "stop_vault",
+        "type": "shell",
+        "command":"killall",
+        "args": [
+            "vault"
+        ],
+        "promptOnClose": false,
+        "presentation": {
+            "reveal": "silent",
+        }
+    }]
+}

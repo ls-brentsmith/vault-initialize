@@ -3,7 +3,12 @@ module github.com/ls-brentsmith/vault-initialize
 go 1.17
 
 require (
-	cloud.google.com/go v0.61.0 // indirect
+	cloud.google.com/go v0.61.0
+	github.com/hashicorp/vault/api v1.1.1
+	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c
+)
+
+require (
 	github.com/cenkalti/backoff/v3 v3.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
@@ -17,9 +22,7 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/go-sockaddr v1.0.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/vault/api v1.1.1 // indirect
 	github.com/hashicorp/vault/sdk v0.2.1 // indirect
-	github.com/kioie/gcp-secret-manager v0.0.0-20210108124124-dbc70a5b9b5f // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.3.2 // indirect
 	github.com/pierrec/lz4 v2.5.2+incompatible // indirect
@@ -33,7 +36,6 @@ require (
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 	google.golang.org/api v0.29.0 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
-	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c // indirect
 	google.golang.org/grpc v1.30.0 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
